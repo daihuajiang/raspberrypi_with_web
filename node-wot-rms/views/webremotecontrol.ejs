@@ -1,0 +1,186 @@
+<!-- !DOCTYPE html是宣告這個網頁是基於HTML5所寫的 -->
+<!DOCTYPE html> 
+<html> 
+<!-- head為網頁的表頭，通常將CSS、引用bootstrap、jquery等meta data，以及javascript函數放在表頭內 -->
+<head>
+	<!-- 包含partialviews目錄下之head.ejs檔案，以載入jquery及bootstrap函數庫 --> 
+	<% include partialviews/head.ejs %>
+
+	<!-- 設定網頁之標題 -->
+	<title><%= title %></title>
+	<!-- 以下這個匿名函數是jquery的ready事件處理方法，當網頁Ready好的就會自動執行 -->
+	<!-- 因此，可以把要註冊的所有事件處理函數及需要先執行的命令放在這個函數內 -->
+	<script>
+		$(function(){
+			// 幫id為btn1的按鈕標籤註冊了點擊事件的處理方法
+			$('#btn1').click(function(){
+				$.post(
+					'/store_email/' + $('#email').val(),
+					function(data){
+						$('#email_status').val(data.message);
+					}
+				);
+			});
+
+		    // 幫id為btn2的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btn2').click(function(){
+				$.post(
+					'/web_video_streaming/on',
+					function(data){
+						loadstreaming();  // 顯示影像串流					
+					}
+				);
+			});
+			
+			// 幫id為btn3的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btn3').click(function(){
+				$.post(
+					'/web_video_streaming/off',
+					function(data){
+						offloadstreaming();  // 關閉影像串流						
+					}
+				);
+			});
+
+			// 幫id為btn4的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btn4').click(function(){
+				$.post(
+					'/take_picture',
+					function(data){
+						location.reload(true); // 重新載入網頁
+					}
+				);
+			});
+			
+			// 幫id為btn5的按鈕標籤註冊了點擊事件的處理方法
+			$('#btn5').click(function(){
+				$.post(
+					'/control8leds/1',
+					function(data){
+						$('#leds_status').val(data.message);
+					}
+				);
+			});
+			
+			// 幫id為btn6的按鈕標籤註冊了點擊事件的處理方法的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btn6').click(function(){
+				$.post(
+					'/control8leds/2',
+					function(data){
+						$('#leds_status').val(data.message);
+					}
+				);
+			});
+			
+			// 幫id為btn7的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btn7').click(function(){
+				$.post(
+					'/control8leds/3',
+					function(data){
+						$('#leds_status').val(data.message);
+					}
+				);
+			});
+			
+			// 幫id為btn8的按鈕標籤註冊了點擊事件的處理方法
+			$('#btn8').click(function(){
+				$.post(
+					'/control8leds/4',
+					function(data){
+						$('#leds_status').val(data.message);
+					}
+				);
+			});
+
+			// 幫id為btn9的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btn9').click(function(){
+				$.post(
+					'/readDHT22',
+					function(data){
+						$('#temperature').val(data.temperature);
+						$('#humidity').val(data.humidity);
+					}
+				);
+			});
+		
+			// 幫id為btnhome的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btnhome').click(function(){
+				// 先關掉picamera，再回首頁
+				$.post(
+					'/web_video_streaming/off',
+					function(data){
+						window.location.href = '/';				
+					}
+				);
+			});
+
+		})
+	</script>
+	<style>
+		input {font-size:12px}
+	</style>
+</head>
+
+<!-- body為網頁的內容，也就是呈現使用者介面UI的地方 -->
+<body class="container" class="bg-warning" style="font-family:標楷體;">
+<!-- 包含partialviews目錄下之navigator.ejs檔案，以載入使用bootstrap設計之導覽列 -->
+<% include partialviews/navigator.ejs %>
+
+<!-- 以下為操作介面UI之設計 -->
+<div  style="text-align:center;">
+	<!-- 操作介面之標題 -->
+	<h3 class="bg-info"><b>Web遠程監控操作網頁</b> </h3>
+	<label for="emails" class="text-primary"><b>輸入接收告警人員Email(多個時用逗號隔開)：</b></label>
+	<input type="email" id="email" size="30" value="A6248317@g.pccu.edu.tw" style="font-size:12px"> 
+	<button id="btn1" class="btn btn-warning btn-sm"><b>儲存</b></button> <br>
+	<label for="email_status" class="text-primary"><b>接收告警電郵清單：</b></label>
+	<input type="text" id="email_status" size="60" style="font-size:12px" readonly="true">
+	<button id="btn4" class="btn btn-danger btn-md">拍照告警</b></button> <br><br>
+	
+	<button id="btn2" class="btn btn-warning btn-md">啟動即時網路視訊串流</b></button>
+	<button id="btn3" class="btn btn-warning btn-md">關閉即時網路視訊串流</b></button> <br><br>
+	
+	<img id="streaming" width="430" height="300" alt="No Video Streaming Available!"> <br>
+		
+	<button id="btn5" class="btn btn-warning btn-md">閃爍奇數燈4次</button>
+	<button id="btn6" class="btn btn-warning btn-md">閃爍偶數燈4次</button> <br><br>
+	
+	<label for="leds_status" class="text-primary"><b>LED燈狀態：</b></label>
+	<input type="text" id="leds_status" size="18" style="font-size:16px" readonly="true"> 
+	<button id="btn9" class="btn btn-warning btn-md">讀取溫溼度</button> <br><br>
+		<label for="temperature" class="text-primary"><b>溫度(&deg;C)：</b></label>
+		<input type="text" id="temperature" size="4" style="font-size:16px" readonly="true">
+		<label for="humidity" class="text-primary"><b>濕度(%):</b></label>
+		<input type="text" id="humidity" size="4" style="font-size:16px" readonly="true"><br><br>
+
+	<!-- 回首頁之按鈕 -->
+	<button id="btnhome" class="btn btn-info btn-sm"><b>回首頁</b></button>
+
+</div>
+<script>
+	// 建立網路視訊串流伺服器之網址，格式如右：http://IP-of-RPi:8000/stream.mjpg
+	// 例如IP-of-PRi = 10.0.2.103，則網址為 http://10.0.2.103:8000/stream.mjpg
+	// var web_video_streaming_url = "http://140.137.41.122:8000/stream.mjpg";
+	// 以下這行的樹梅派IP直接由後端服務提供(<%= serverip %>)，不用手動去變更了
+	var web_video_streaming_url = "http://<%= serverip %>:8000/stream.mjpg";
+
+	// 取得顯示即時影像串流之元素(element)
+	var streaming_element = document.getElementById("streaming");
+	
+	// 顯示影像串流副程式
+	function loadstreaming()
+	{
+		streaming_element.src = web_video_streaming_url;
+	}
+	
+	// 不要顯示影像串流副程式
+	function offloadstreaming()
+	{
+		streaming_element.src = "";
+	}
+	
+	// 讓網頁載入時顯示影像串流
+	loadstreaming();     
+</script>
+</body>
+</html>

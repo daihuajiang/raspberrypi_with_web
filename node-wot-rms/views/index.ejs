@@ -1,0 +1,69 @@
+<!-- !DOCTYPE html是宣告這個網頁是基於HTML5所寫的 -->
+<!DOCTYPE html> 
+<html> 
+<!-- head為網頁的表頭，通常將CSS、引用bootstrap、jquery等meta data，以及javascript函數放在表頭內 -->
+<head>
+	<!-- 包含partialviews目錄下之head.ejs檔案，以載入jquery及bootstrap函數庫 --> 
+	<% include partialviews/head.ejs %>
+
+	<!-- 設定網頁之標題 -->
+	<title><%= title %></title>
+	<!-- 以下這個匿名函數是jquery的ready事件處理方法，當網頁Ready好的就會自動執行 -->
+	<!-- 因此，可以把要註冊的所有事件處理函數及需要先執行的命令放在這個函數內 -->
+	<script>
+		$(function(){
+			// 幫id為btn1的按鈕標籤註冊了點擊事件的處理方法，導覽到[Web遠端監控操作網頁]  
+			$('#btn1').click(function(){
+				 window.location.href = '/webremotecontrol';
+			});
+
+			// 幫id為btn2的按鈕標籤註冊了點擊事件的處理方法，導覽到[查詢天氣操作網頁]  
+			$('#btn2').click(function(){
+				 window.location.href = '/queryweather';
+			});
+
+			// 幫id為btn3的按鈕標籤註冊了點擊事件的處理方法，導覽到[查詢與儲存感測溫濕度操作網頁]  
+			$('#btn3').click(function(){
+				window.location.href = '/query-store-dhtsensordata';
+		   });
+
+			// 幫id為btn4的按鈕標籤註冊了點擊事件的處理方法，導覽到[影像辨識操作網頁]  
+			$('#btn4').click(function(){
+				 window.location.href = '/imgrecognition';
+			});
+
+			// 幫id為btn5的按鈕標籤註冊了點擊事件的處理方法，導覽到[影像辨識操作網頁]  
+			$('#btn5').click(function(){
+				 window.location.href = '/photo-recognizephoto';
+			});
+
+			// 幫id為btnhome的按鈕標籤註冊了點擊事件的處理方法，導覽到[專案首頁] 
+			$('#btnhome').click(function(){
+			    window.location.href = '/';
+			});
+		})
+	</script>
+</head>
+
+<!-- body為網頁的內容，也就是呈現使用者介面UI的地方 -->
+<body class="container" class="bg-warning" style="font-family:標楷體;">
+<!-- 包含partialviews目錄下之navigator.ejs檔案，以載入使用bootstrap設計之導覽列 -->
+<% include partialviews/navigator.ejs %>
+	
+<!-- 以下為操作介面UI之設計 -->
+<div  style="text-align:center;">
+	<!-- 操作介面之標題 -->
+	<h3 class="bg-info"><b>Web物聯網遠程監控系統v5專案首頁</b></h3> <br>
+
+	<!-- 操作介面之內容 -->
+	<button id="btn1" class="btn btn-warning btn-sm"><b>Web遠程監控</b></button>
+	<button id="btn2" class="btn btn-warning btn-sm"><b>查詢天氣</b></button>
+	<button id="btn3" class="btn btn-warning btn-sm"><b>查詢與儲存感測溫溼度</b></button> <br><br>
+	<button id="btn4" class="btn btn-warning btn-sm"><b>上傳與辨識圖片(呼叫ACV-API)</b></button> 
+	<button id="btn5" class="btn btn-warning btn-md"><b>拍攝與辨識照片(呼叫ACV-API)</b></button><br><br>
+	 
+	<!-- 回首頁之按鈕 -->
+	<button id="btnhome" class="btn btn-info btn-sm"><b>回首頁</b></button>
+</div>
+</body>
+</html>

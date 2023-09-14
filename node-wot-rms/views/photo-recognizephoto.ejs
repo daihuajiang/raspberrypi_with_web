@@ -1,0 +1,152 @@
+<!-- !DOCTYPE html是宣告這個網頁是基於HTML5所寫的 -->
+<!DOCTYPE html> 
+<html> 
+<!-- head為網頁的表頭，通常將CSS、引用bootstrap、jquery等meta data，以及javascript函數放在表頭內 -->
+<head>
+	<!-- 包含partialviews目錄下之head.ejs檔案，以載入jquery及bootstrap函數庫 --> 
+	<% include partialviews/head.ejs %>
+
+	<!-- 設定網頁之標題 -->
+	<title><%= title %></title>
+	<style>
+		#result {
+			font-size: 18px;
+		}
+	</style>
+	<!-- 以下這個匿名函數是jquery的ready事件處理方法，當網頁Ready好的就會自動執行 -->
+	<!-- 因此，可以把要註冊的所有事件處理函數及需要先執行的命令放在這個函數內 -->
+	<script>
+		$(function(){
+			// 幫id為btn1的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btn1').click(function(){
+				$.post(
+					'/web_video_streaming/on',
+					function(data){
+						loadstreaming();  // 顯示影像串流					
+					}
+				);
+			});
+			
+			// 幫id為btn2的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btn2').click(function(){
+				$.post(
+					'/web_video_streaming/off',
+					function(data){
+						offloadstreaming();  // 關閉影像串流						
+					}
+				);
+			});
+
+			// 幫id為btn3的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btn3').click(function(){
+				$.post(
+					'/photo-recognizephoto',
+					function(data){
+						// 視訊串流之網址
+						var webvideostreaming_url = "http://<%= serverip %>:8000/stream.mjpg";
+						console.log(webvideostreaming_url);
+						// 拍攝取得之照片的網址
+						var photo_url = "http://<%= serverip %>:3000" + data.photourl;
+						console.log(photo_url);
+						// 將id 為sourcephoto之img標籤之src屬性設定為拍攝取得之照片的網址 (顯示拍攝取得之照片)
+						$("#sourcephoto").attr("src", photo_url);  
+						// 重新載入web video streaming之img元素內容 (重新顯示視訊串流)
+						$("#streaming").load(webvideostreaming_url); 
+						$("#streaming").attr("src", "");  
+						$("#streaming").attr("src", webvideostreaming_url);  
+						if (data.status == 0){
+							// 取出照片辨識結果，將其顯示在可編輯之div區
+							var datestr = new Date().toLocaleString();
+							var str = "<font color=red><b>照片辨識結果如下： </b> </font> <br>"; 
+							str = str + "<font color=blue><b>(1)分類(Categories):<br>" + JSON.stringify(data.result.categories) + "</b> </font> <br>";
+							str = str + "<font color=Maroon><b>(2)描述(Description):<br>" + JSON.stringify(data.result.description) + "</b> </font> <br>";
+							str = str + "<font color=DarkViolet><b>(3)物件(Objects):<br>" + JSON.stringify(data.result.objects) + "</b> </font> <br>";
+							str = str + "<font color=green><b>(4)臉孔(Faces):<br>" + JSON.stringify(data.result.faces) + "</b> </font>";
+							$("#result").html(str);
+						}	
+						else{
+							// 取出照片辨識錯誤之原因，將其顯示在可編輯之div區
+							var datestr = new Date().toLocaleString();
+							var str = "<font color=red><b>照片辨識結果如下： (" + datestr + ") </b> </font> <br>"; 
+							var str = "<font color=blue><b>照片分析發生錯誤，原因如下：</b> </font> <br>" 
+							str = str + "<font color=Maroon><b>" + JSON.stringify(data.result) + "</b> </font>";
+							$("#result").html(str);
+						}					
+					}
+				);
+			});
+		
+			// 幫id為btnhome的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btnhome').click(function(){
+				// 先關掉picamera，再回首頁
+				$.post(
+					'/web_video_streaming/off',
+					function(data){
+						window.location.href = '/';				
+					}
+				);
+			});
+
+		})
+	</script>
+	<style>
+		input {font-size:12px}
+	</style>
+</head>
+
+<!-- body為網頁的內容，也就是呈現使用者介面UI的地方 -->
+<body class="container" class="bg-warning" style="font-family:標楷體;">
+<!-- 包含partialviews目錄下之navigator.ejs檔案，以載入使用bootstrap設計之導覽列 -->
+<% include partialviews/navigator.ejs %>
+
+<!-- 以下為操作介面UI之設計 -->
+<div  style="text-align:center;">
+	<!-- 操作介面之標題 -->
+	<h3 class="bg-info"><b>Web遠程拍照與辨識照片操作網頁</b> </h3>
+	<button id="btn1" class="btn btn-warning btn-sm">啟動網路視訊串流</b></button>
+	<button id="btn2" class="btn btn-warning btn-sm">關閉網路視訊串流</b></button> 
+	<button id="btnhome" class="btn btn-info btn-sm"><b>回首頁</b></button> <br><br>
+	<button id="btn3" class="btn btn-danger btn-sm">拍攝與辨識照片(呼叫ACV-API)</b></button> 
+	
+	<table align="center">
+		<tr>
+			<th><img id="streaming" width="260" height="200" style="margin:5px 0px 0px 0px" alt="No Video Streaming Available!"></th> 
+			<th>
+				<div align="center"><h3><b class="text-primary">拍攝取得之照片:</b></h3></div>
+				<img src="./images/user.png" id="sourcephoto" width="auto" height="200" style="margin:0px 0px 0px 10px"> 
+			</th>
+		</tr>
+	</table>
+	<h3><b class="text-primary">辨識結果：</b></h3> <br>
+	<!-- 可編輯之div區 -->
+	<div contenteditable="true" id = "result" style="text-align: left;"></div>
+		
+	</tr>
+</div>
+<script>
+	// 建立網路視訊串流伺服器之網址，格式如右：http://IP-of-RPi:8000/stream.mjpg
+	// 例如IP-of-PRi = 10.0.2.103，則網址為 http://10.0.2.103:8000/stream.mjpg
+	// var web_video_streaming_url = "http://140.137.41.122:8000/stream.mjpg";
+	// 以下這行的樹梅派IP直接由後端服務提供(<%= serverip %>)，不用手動去變更了
+	var web_video_streaming_url = "http://<%= serverip %>:8000/stream.mjpg";
+
+	// 取得顯示即時影像串流之元素(element)
+	var streaming_element = document.getElementById("streaming");
+	
+	// 顯示影像串流副程式
+	function loadstreaming()
+	{
+		streaming_element.src = web_video_streaming_url;
+	}
+	
+	// 不要顯示影像串流副程式
+	function offloadstreaming()
+	{
+		streaming_element.src = "";
+	}
+	
+	// 讓網頁載入時顯示影像串流
+	loadstreaming();    
+</script>
+</body>
+</html>

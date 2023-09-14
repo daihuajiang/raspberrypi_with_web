@@ -1,0 +1,75 @@
+<!-- 採用Bootstrap的導覽列設計 -->
+<nav class="navbar navbar-default" style="font-family:標楷體">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">A6248317_江岱樺_作業3</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li><a id="home">首頁</a></li>
+          <li><a id="webremotecontrol">Web遠程監控</a></li>
+          <li><a id="queryweather">查詢天氣</a></li>
+          <li><a id="query-store-dhtsensordata">查詢與儲存感測溫濕度</a></li>
+          <li><a id="imgrecognition">上傳與辨識圖片(呼叫ACV-API)</a></li>
+          <li><a id="photo-recognizephoto">拍攝與辨識照片(呼叫ACV-API)</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- 使導覽列超連結可以運作之javascript codes -->
+  <script>
+      // 點擊[首頁超連結]，將網頁導向網站首頁
+      var home_element = document.getElementById("home");
+      home_element.href = '/';
+       // 點擊[Web遠程監控]超連結，將網頁導向Web遠程監控服務之操作網頁
+       var webremotecontrol_element = document.getElementById("webremotecontrol");
+       webremotecontrol_element.href = '/webremotecontrol';
+       // 點擊[查詢天氣]超連結，將網頁導向查詢天氣之操作網頁
+       var weather_element = document.getElementById("queryweather");
+       weather_element.href = '/queryweather';
+       // 點擊[查詢天氣]超連結，將網頁導向查詢天氣之操作網頁
+       var dhtsensor_element = document.getElementById("query-store-dhtsensordata");
+       dhtsensor_element.href = '/query-store-dhtsensordata';
+      // 點擊[上傳與辨識圖片(呼叫ACV-API)服務超連結]，將網頁導向上傳與辨識圖片(呼叫ACV-API)操作網頁
+      var imgrecognition_element = document.getElementById("imgrecognition");
+      imgrecognition_element.href = '/imgrecognition';
+      // 點擊[拍照與辨識照片(呼叫ACV-API)服務超連結]，將網頁導向拍照與辨識照片(呼叫ACV-API)操作網頁
+      var photo_recognizephoto_element = document.getElementById("photo-recognizephoto");
+      photo_recognizephoto_element.href = '/photo-recognizephoto';
+  </script>
+  
+  <!-- 裝扮導覽列顏色與超連結效果之CSS -->
+  <style>
+      .navbar {
+          background-color: #ffffb9 !important;
+      }
+  
+      .navbar .navbar-brand {
+          color: #82d900 !important;
+          font-size: 16px;
+          font-weight:bold;
+      }
+  
+      .navbar li a {
+          color: #ff5e00 !important;
+                  font-size: 14px;
+          font-weight:bold;
+      }
+  
+      .navbar-nav li a:hover, .navbar-nav li.active a {
+          color: #f4a91e2c !important;
+          background-color: #fff !important;
+      }
+  
+      .navbar-default .navbar-toggle {
+          border-color: transparent;
+          color: #fff !important;
+      } 
+  </style>
+  

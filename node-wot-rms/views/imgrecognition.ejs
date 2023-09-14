@@ -1,0 +1,141 @@
+<!-- !DOCTYPE html是宣告這個網頁是基於HTML5所寫的 -->
+<!DOCTYPE html> 
+<html> 
+<!-- head為網頁的表頭，通常將CSS、引用bootstrap、jquery等meta data，以及javascript函數放在表頭內 -->
+<head>
+	<!-- 包含partialviews目錄下之head.ejs檔案，以載入jquery及bootstrap函數庫 --> 
+	<% include partialviews/head.ejs %>
+
+	<!-- 設定網頁之標題 -->
+	<title><%= title %></title>
+	<style>
+		#result {
+			font-size: 18px;
+		}
+	</style>
+	<!-- 以下這個匿名函數是jquery的ready事件處理方法，當網頁Ready好的就會自動執行 -->
+	<!-- 因此，可以把要註冊的所有事件處理函數及需要先執行的命令放在這個函數內 -->
+	<script>
+		$(function(){
+		    // 幫id為btn1的按鈕標籤註冊了點擊事件的處理方法 (分析照片)
+			$('#btn1').click(function(){
+				var imgfile = document.getElementById('u_img_file'); // 取得影像檔名稱之<input>標籤
+				if (!/.(gif|jpg|jpeg|png|GIF|JPG|PNG|JPEG)$/.test(imgfile.value)) {
+					alert("圖片類型不正確!");
+					return;
+				}
+				var formData = new FormData();
+				formData.append('file', imgfile.files[0]);
+				console.log(imgfile.files[0]);
+				var url = "/upload-analyze-photo";
+				$.ajax({
+					url: url,
+					type: "POST",
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function (data) {
+						if (data.status == 0) {
+							var str = "<font color=red><b>圖片分析結果如下：</b> </font> <br>" 
+							str = str + "<font color=blue><b>(1)分類(Categories): <br>" + JSON.stringify(data.result.categories) + "</b> </font> <br>";
+							str = str + "<font color=Maroon><b>(2)描述(Description): <br>" + JSON.stringify(data.result.description) + "</b> </font> <br>";
+							str = str + "<font color=DarkViolet><b>(3)物件(Objects): <br>" + JSON.stringify(data.result.objects) + "</b> </font> <br>";
+							str = str + "<font color=green><b>(4)顏色(Color): <br>" + JSON.stringify(data.result.color) + "</b> </font> <br>";
+							str = str + "<font color=Purple><b>(5)臉孔(Faces): <br>" + JSON.stringify(data.result.faces) + "</b> </font>";												
+							$("#result").html(str);			
+						}
+					},
+					error: function (err) {
+						console.log(err);
+					}
+				});
+			});
+
+			// 幫id為btn2的按鈕標籤註冊了點擊事件的處理方法 (檢測照片)
+			$('#btn2').click(function(){
+				var imgfile = document.getElementById('u_img_file'); // 取得影像檔名稱之<input>標籤
+				if (!/.(gif|jpg|jpeg|png|GIF|JPG|PNG|JPEG)$/.test(imgfile.value)) {
+					alert("圖片類型不正確!");
+					return;
+				}
+				var formData = new FormData();
+				formData.append('file', imgfile.files[0]);
+				console.log(imgfile.files[0]);
+				var url = "/upload-detect-photo";
+				$.ajax({
+					url: url,
+					type: "POST",
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function (data) {
+						if (data.status == 0) {
+							var len = data.result.objects.length;
+							console.log(len);
+							var str = "<font color=red><b>總計檢測出" + len +"個物件，資訊如下:</b> </font> <br>"; 
+							for (i=0; i<len; i++){
+								str = str + "<font color=blue><b>物件" + (i+1) + ": " + JSON.stringify(data.result.objects[i]) + "</b> </font> <br>";
+							}
+							$("#result").html(str);	 	  
+						}
+					},
+					error: function (err) {
+						console.log(err);
+					}
+				});
+			});
+			
+		
+			// 幫id為btnhome的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btnhome').click(function(){
+				window.location.href = '/';	
+			});
+
+			// 修改預覽圖示
+			$("#u_img_file").change(function () {
+				readURL(this);
+			});
+
+		})
+
+        // 將讀取的影像檔結果當成URL，並指定給img的src屬性，將影像檔顯示於網頁上
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#u_img").attr('src', e.target.result);
+				}
+                reader.readAsDataURL(input.files[0]);
+            }
+		}
+		
+	</script>
+</head>
+
+<!-- body為網頁的內容，也就是呈現使用者介面UI的地方 -->
+<body class="container" class="bg-warning" style="font-family:標楷體;">
+<!-- 包含partialviews目錄下之navigator.ejs檔案，以載入使用bootstrap設計之導覽列 -->
+<% include partialviews/navigator.ejs %>
+
+<!-- 以下為操作介面UI之設計 -->
+<div  style="text-align:center;">
+	<!-- 操作介面之標題 -->
+	<h3 class="bg-info"><b>上傳與辨識圖片(呼叫Azure Computer Vision API)操作網頁</b> </h3>
+	<!-- 操作介面設計 -->
+	<!-- 設定照片高度為200px，寬度根據照片大小等比率自動調整(auto)-->
+	<img src="./images/user.png" class="u_img" id="u_img" height="190" width="auto" > <br><br>
+
+	<div>  <!-- 讓使用者選取照片檔案 -->
+		<input id="u_img_file" type="file" name="file" style="margin:0px auto; display:block;">
+	</div>
+	<br>
+
+	<button id="btn1" class="btn btn-warning btn-sm">分析(Aanlyze)圖片</button> 
+	<button id="btn2" class="btn btn-warning btn-sm">檢測(Detect)圖片</button> 
+	<button id="btnhome" class="btn btn-info btn-sm">回首頁</button> <br>
+	<b class="text-primary"><h3>辨識結果：</h3></b> <br>
+	<!-- 可編輯之div區 -->
+	<div contenteditable="true" id = "result" style="text-align: left;"><h2></h2></div>
+</div>
+</body>
+</html>

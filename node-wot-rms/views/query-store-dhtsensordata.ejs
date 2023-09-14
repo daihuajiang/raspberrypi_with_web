@@ -1,0 +1,123 @@
+<!-- !DOCTYPE html是宣告這個網頁是基於HTML5所寫的 -->
+<!DOCTYPE html> 
+<html> 
+<!-- head為網頁的表頭，通常將CSS、引用bootstrap、jquery等meta data，以及javascript函數放在表頭內 -->
+<head>
+	<!-- 包含partialviews目錄下之head.ejs檔案，以載入jquery及bootstrap函數庫 --> 
+	<% include partialviews/head.ejs %>
+
+	<!-- 設定網頁之標題 -->
+	<title><%= title %></title>
+	<!-- 以下這個匿名函數是jquery的ready事件處理方法，當網頁Ready好的就會自動執行 -->
+	<!-- 因此，可以把要註冊的所有事件處理函數及需要先執行的命令放在這個函數內 -->
+	<script>
+		$(function(){
+			// 幫id為btn1的按鈕標籤註冊了點擊事件的處理方法
+			$('#btn1').click(function(){
+				$.post(
+					'/query-store-dhtsensordata',
+					function(data){
+						$('#Temperature').val(data[0].temperature);
+						$('#Humidity').val(data[0].humidity);
+						// 將取出的最新10筆資料重新依照較舊data[0]到較新data[9]排序
+						var length = data.length;
+						var tempa = new Array();					
+						var humida = new Array();				
+						for (i=0; i< length; i++)
+						{	
+							tempa[i] = Number(data[length-i-1].temperature);
+							humida[i]= Number(data[length-i-1].humidity);	
+						}
+						// 呼叫hichart繪製曲線圖函數，傳入溫度值陣列及濕度值陣列
+						plotcharts(tempa, humida);
+					}
+				);
+			});
+			
+			// 幫id為btnhome的按鈕標籤註冊了點擊事件的處理方法 
+			$('#btnhome').click(function(){
+				 window.location.href = '/';
+			});
+			
+			// 此為hichart提供的繪製曲線圖函數，參數為溫度值陣列及濕度值陣列
+			function plotcharts(tempa, humida)
+			{
+				// 繪製Highcharts圖測試
+				Highcharts.chart('container', {
+					chart: {
+						type: 'line'
+					},
+					legend: {
+						itemStyle: {
+							font: '18pt 標楷體',
+							color: '#222'
+						},
+						itemHoverStyle: {
+							color: 'red'
+						},
+						itemHiddenStyle: {
+							color: '#444'
+						}
+					},
+					title: {
+						text: '最近10筆感測溫度及濕度',
+						style: {color:'red', fontSize: '20px', fontFamily: '標楷體'}
+					},
+					
+					xAxis: {
+						categories: ['第1筆', '第2筆', '第3筆', '第4筆', '第5筆', '第6筆', '第7筆', '第8筆', '第9筆', '第10筆'],
+						labels: {
+							style: {color:'green', fontSize: '20px', fontFamily: '標楷體'}
+						}
+					},
+					yAxis: {
+						title: {
+							text: '溫度(°C) 濕度(%)',
+							style: {color:'blue', fontSize: '20px', fontFamily: '標楷體'}
+						}
+					},
+					plotOptions: {
+						line: {
+							dataLabels: {
+								enabled: true
+							},
+							enableMouseTracking: true
+						}
+					},
+					series: [{
+						name: '溫度',
+						style: {fontSize: '16px', fontFamily: '標楷體'},
+						data: tempa
+					}, {
+						name: '濕度',
+						style: {fontSize: '16px', fontFamily: '標楷體'},
+						data: humida
+					}]
+				});
+			}	
+		})
+	</script>
+</head>
+
+<!-- body為網頁的內容，也就是呈現使用者介面UI的地方 -->
+<body class="container" class="bg-warning" style="font-family:標楷體;">
+<!-- 包含partialviews目錄下之navigator.ejs檔案，以載入使用bootstrap設計之導覽列 -->
+<% include partialviews/navigator.ejs %>
+	
+<!-- 以下為操作介面UI之設計 -->
+<div  style="text-align:center;">
+	<!-- 操作介面之標題 -->
+	<h3 class="bg-info"><b>查詢與儲存感測溫濕度操作網頁</b></h3>
+	<h4>
+	<button id="btn1" class="btn btn-warning btn-md"><b>查詢與儲存感測溫溼度</b></button>
+	<b class="text-primary">溫度(°C):</b> <input type="text" size="6" id="Temperature">
+	<b class="text-primary">溼度(%):</b> <input type="text" size="6" id="Humidity"> <br/>
+	<!-- 顯示回首頁按鈕 -->
+	<button id="btnhome" class="btn btn-info btn-sm"><b>回首頁</b></button>
+	</h4>
+	<!-- 顯示溫溼度曲線圖 -->
+	<div id="container" style="min-width: 310px; height: 320px; margin: 0 auto"></div>
+
+</div>
+</body>
+</html>
