@@ -1,1 +1,2 @@
-# raspberrypi_with_web
+# 樹梅派上建置資料庫與呼叫雲端API之Web物聯網應用
+綜合第Python控制LED燈、即時網路視訊串流、Web遠程監控LED、讀取DHT22溫濕度、拍照、發送告警email等、MySQL資料庫程式應用、呼叫中央氣象局天氣API以及呼叫微軟電腦視覺API辨識圖片與照片這些功能，在樹梅派上設計與實作一個使用到資料庫與雲端API之Web物聯網應用系統。
