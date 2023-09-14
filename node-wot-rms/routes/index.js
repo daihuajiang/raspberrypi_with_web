@@ -228,7 +228,7 @@ router.post('/web_video_streaming/:cmd', function(req, res){
 router.post('/store_email/:email', function(req, res){
 	email=req.params.email;
 	// 建立接收告警email清單(每個email用逗號隔開)，第1個預設為老師的Gmail帳號，請改為你自己的
-	emails="d22405715@gmail.com" + ", " + email; 
+	emails="xxx@gmail.com" + ", " + email; 
 	// 將emails清單字串存alert_emails.txt中
 	fs = require('fs');
 	fs.writeFileSync('./alert-emails.txt', emails);
@@ -278,7 +278,7 @@ router.post('/take_picture', function(req, res){
 	// 載入nodemailer模組
 	nodemailer = require("nodemailer");
 	// 傳送者資訊 ***(請改為你的姓名與email帳號)***
-	emailsender = "Min-Hsiung Hung <hungmh4@gmail.com>";
+	emailsender = "xxx <xxx@gmail.com>";
 	// 讀取警訊接收者email清單
 	fs=require('fs');
 	emailreceivers=fs.readFileSync('./alert-emails.txt','utf8');
@@ -296,8 +296,8 @@ router.post('/take_picture', function(req, res){
 		port: 587,              // Gmail使用TLS時之連接埠號碼
 		secure: false,          // true代表使用連接埠465 (使用SSL); false代表使用其他連接埠，例如，587 (使用TLS)
 		auth: {
-			user: "hungmh4@gmail.com",    // 傳送郵件帳號之使用者 (這是老師教學示範用的gmail帳號，請改為你自己的)
-			pass: "Min123456!!" // 傳送郵件帳號之密碼 (這是老師教學示範用gmail帳號之密碼，請改為你自己的)
+			user: "xxx@gmail.com",    // 傳送郵件帳號之使用者 (這是老師教學示範用的gmail帳號，請改為你自己的)
+			pass: "123456!!" // 傳送郵件帳號之密碼 (這是老師教學示範用gmail帳號之密碼，請改為你自己的)
 		}
 	});
 
@@ -435,7 +435,7 @@ router.post('/queryweather/:selectedcity', function(req, res){
 
 	// create the url for querying cwb weather API
 	var baseurl = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?";
-	var AuthCode = "CWB-7B45C9F6-0A6A-48DE-AACF-AEC9D4EDE5E2"; // 請抽換成你的中央氣象局授權碼
+	var AuthCode = ""; // 請抽換成你的中央氣象局授權碼
 	// querystring.escape(str) method performs URL percent-encoding on the given str
 	var citystring =  "locationName=" + querystring.escape(selectedcity); // 將URL之中文字進行%編碼
 	var qstring = citystring + "&elementName=T,RH,WeatherDescription,MaxT,MinT&format=JSON";
