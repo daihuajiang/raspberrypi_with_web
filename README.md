@@ -32,7 +32,7 @@
 
 ![](https://github.com/daihuajiang/raspberrypi_with_web/blob/main/img/pic7.png)
 
-下圖為拍照及辨識照片頁面，頁面中可看到攝像頭的畫面，最上方3個按鈕為開啟及關閉視訊串流的按鈕以及回首頁的按鈕，紅色的拍攝及辨識照片按鈕按下後，視訊串流右方會顯示拍攝到的照片，api辨識後回傳結果並顯示在下方空白處>
+下圖為拍照及辨識照片頁面，頁面中可看到攝像頭的畫面，最上方3個按鈕為開啟及關閉視訊串流的按鈕以及回首頁的按鈕，紅色的拍攝及辨識照片按鈕按下後，視訊串流右方會顯示拍攝到的照片，api辨識後回傳結果並顯示在下方空白處。
 
 ![](https://github.com/daihuajiang/raspberrypi_with_web/blob/main/img/pic8.png)
 
